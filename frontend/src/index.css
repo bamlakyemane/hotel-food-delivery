@@ -1,0 +1,36 @@
+/* src/index.css */
+@import "tailwindcss";
+
+/* ─── Custom theme tokens matching your spec ─── */
+@theme {
+  /* Brand palette from the spec (page 19) */
+  --color-forest-50:  #f2f7f4;
+  --color-forest-100: #dcebe1;
+  --color-forest-200: #b9d7c3;
+  --color-forest-300: #8fbc9e;
+  --color-forest-400: #5f9a75;
+  --color-forest-500: #3d7d57;
+  --color-forest-600: #2c6244;   /* ← primary dark forest green */
+  --color-forest-700: #234e37;
+  --color-forest-800: #1c3e2c;
+  --color-forest-900: #152f22;
+
+  --color-cream-50:   #fdfaf4;
+  --color-cream-100:  #faf3e3;
+  --color-cream-200:  #f5e7c6;   /* ← warm cream secondary */
+  --color-cream-300:  #eed7a0;
+
+  --color-gold-400:   #f0b24a;
+  --color-gold-500:   #e89b1f;   /* ← golden orange accent */
+  --color-gold-600:   #c47f12;
+
+  --color-charcoal:   #2b2b2b;   /* ← dark charcoal text */
+  --color-offwhite:   #fbfaf7;   /* ← off-white background */
+}
+
+/* Base typography & background */
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  color: var(--color-charcoal);
+  background-color: var(--color-offwhite);
+}
