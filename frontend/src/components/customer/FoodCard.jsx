@@ -1,9 +1,28 @@
 // src/components/customer/FoodCard.jsx
-import { Link } from "react-router-dom";
-import { Star, Clock, Heart } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Star, Clock, Heart, ShoppingCart } from "lucide-react";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { useCartStore } from "../../store/cartStore";
+import { useFavoritesStore } from "../../store/favoritesStore";
 
 export default function FoodCard({ product }) {
+  const navigate = useNavigate();
+  const addItem = useCartStore((s) => s.addItem);
+  const toggleFavorite = useFavoritesStore((s) => s.toggle);
+  const isFavorite = useFavoritesStore((s) => s.ids.includes(product.id));
+
+  const hasOptions = product.variations.length > 0 || product.extras.length > 0;
+
+  function handleAddToCart(e) {
+    e.preventDefault();
+    if (hasOptions) {
+      // Must go to details page to choose variation/extras
+      navigate(`/menu/${product.id}`);
+      return;
+    }
+    addItem(product, { quantity: 1 });
+  }
+
   return (
     <div className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all flex flex-col">
       {/* Image */}
@@ -25,12 +44,17 @@ export default function FoodCard({ product }) {
         <button
           onClick={(e) => {
             e.preventDefault();
-            // Favorite toggle — wired in Phase 3
+            toggleFavorite(product.id);
           }}
           className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 flex items-center justify-center hover:bg-white"
-          aria-label="Add to favorites"
+          aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
         >
-          <Heart size={16} className="text-forest-600" />
+          <Heart
+            size={16}
+            className={
+              isFavorite ? "fill-red-500 text-red-500" : "text-forest-600"
+            }
+          />
         </button>
       </Link>
 
@@ -60,12 +84,13 @@ export default function FoodCard({ product }) {
           <span className="font-bold text-forest-700">
             {formatCurrency(product.price)}
           </span>
-          <Link
-            to={`/menu/${product.id}`}
-            className="bg-forest-600 hover:bg-forest-700 text-cream-50 text-sm font-medium px-4 py-1.5 rounded-full transition-colors"
+          <button
+            onClick={handleAddToCart}
+            className="bg-forest-600 hover:bg-forest-700 text-cream-50 text-sm font-medium px-3 py-1.5 rounded-full transition-colors flex items-center gap-1"
           >
-            View
-          </Link>
+            <ShoppingCart size={14} />
+            {hasOptions ? "Options" : "Add"}
+          </button>
         </div>
       </div>
     </div>

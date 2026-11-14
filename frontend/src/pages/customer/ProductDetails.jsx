@@ -13,11 +13,18 @@ import {
 import { products } from "../../data/products";
 import { getCategoryById } from "../../utils/productHelpers";
 import { formatCurrency } from "../../utils/formatCurrency";
+import { useNavigate } from "react-router-dom"; // ← add to existing react-router import
+import { useCartStore } from "../../store/cartStore";
+import { useFavoritesStore } from "../../store/favoritesStore";
 
 export default function ProductDetails() {
   const { id } = useParams();
   const product = products.find((p) => p.id === id);
-
+  // inside the component, near the top:
+  const navigate = useNavigate();
+  const addItem = useCartStore((s) => s.addItem);
+  const toggleFavorite = useFavoritesStore((s) => s.toggle);
+  const isFavorite = useFavoritesStore((s) => s.ids.includes(product?.id));
   const [quantity, setQuantity] = useState(1);
   const [selectedVariation, setSelectedVariation] = useState(0);
   const [selectedExtras, setSelectedExtras] = useState([]);
@@ -38,7 +45,17 @@ export default function ProductDetails() {
       </div>
     );
   }
-
+  function handleAddToCart() {
+    addItem(product, {
+      quantity,
+      variation:
+        product.variations.length > 0
+          ? product.variations[selectedVariation]
+          : null,
+      extras: selectedExtras.map((i) => product.extras[i]),
+    });
+    navigate("/cart");
+  }
   const category = getCategoryById(product.categoryId);
   const basePrice =
     product.variations.length > 0
@@ -205,16 +222,24 @@ export default function ProductDetails() {
           <div className="flex gap-3">
             <button
               className="flex-1 bg-forest-600 hover:bg-forest-700 text-cream-50 font-semibold px-6 py-3 rounded-full flex items-center justify-center gap-2 transition-colors"
-              onClick={() => alert("Cart will be wired up in Phase 3!")}
+              onClick={handleAddToCart}
             >
-              <ShoppingCart size={18} /> Add to Cart
+              <ShoppingCart size={18} /> Add to Cart —{" "}
+              {formatCurrency(lineTotal)}
             </button>
             <button
-              onClick={() => alert("Favorites arrive in Phase 3!")}
+              onClick={() => toggleFavorite(product.id)}
               className="w-12 h-12 rounded-full border border-cream-200 hover:border-forest-400 flex items-center justify-center"
-              aria-label="Add to favorites"
+              aria-label={
+                isFavorite ? "Remove from favorites" : "Add to favorites"
+              }
             >
-              <Heart size={20} className="text-forest-600" />
+              <Heart
+                size={20}
+                className={
+                  isFavorite ? "fill-red-500 text-red-500" : "text-forest-600"
+                }
+              />
             </button>
           </div>
         </div>

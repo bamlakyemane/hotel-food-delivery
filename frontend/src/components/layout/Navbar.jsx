@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { ShoppingCart, Search, Globe, User, Menu, X } from "lucide-react";
+import { useCartStore } from "../../store/cartStore";
 
 const NAV_LINKS = [
   { to: "/", label: "Home", end: true },
@@ -13,7 +14,7 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   // Placeholder values — wired to real state in later phases
-  const cartCount = 0;
+  const cartCount = useCartStore((s) => s.getItemCount());
   const isLoggedIn = false;
   const language = "EN";
 
