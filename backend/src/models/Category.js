@@ -1,0 +1,16 @@
+// src/models/Category.js
+const mongoose = require("mongoose");
+
+const categorySchema = new mongoose.Schema(
+  {
+    name: { type: String, required: true, trim: true },
+    nameAm: { type: String, required: true, trim: true }, // Amharic name
+    description: { type: String, default: "" },
+    image: { type: String, default: "" },
+    isActive: { type: Boolean, default: true },
+    displayOrder: { type: Number, default: 0 },
+  },
+  { timestamps: true },
+);
+
+module.exports = mongoose.model("Category", categorySchema);
